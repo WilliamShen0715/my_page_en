@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<script type="text/javascript">
+	window.onload = function(){
+		var oBtn = document.getElementById('btn1');
+		var oTxt = document.getElementById('txt1');
+		oBtn.onclick = function(){
+			oNewWin = window.open('about:blank','_blank');
+			oNewWin.document.write(oTxt.value);
+		};
+	};
+</script>
+<body>
+	<textarea id="txt1"></textarea><br>
+	<input type="button" id="btn1" value="run">
+</body>
+</html>

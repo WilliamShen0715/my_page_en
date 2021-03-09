@@ -1,0 +1,85 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+struct DATA{
+    unsigned val;
+    DATA *next;
+};
+
+DATA* merge(DATA* left,DATA* right);
+DATA* mergesort(DATA* head);
+
+int main()
+{
+    int first,value,count,i;
+    DATA *head = new DATA();
+    printf("how many data:");
+    fflush(stdout);
+    scanf("%d",&count);
+    printf("please input:");
+    fflush(stdout);
+    scanf("%d",&first);
+    head -> val = first;
+    head -> next = NULL;
+    
+    DATA *current;
+    current = head;
+    for(i=1;i<count;i++){
+        current -> next = new DATA();
+        scanf("%d",&value);
+        current = current -> next;
+        current -> val = value;
+        current -> next = NULL;
+    }
+    
+    head = mergesort(head);
+        
+    printf("input is ");
+    current = head;
+    while(1){
+        printf("%d ",current -> val);
+        current = current -> next;
+        if(current == NULL) break;
+    }
+    
+}
+
+DATA* merge(DATA* left,DATA* right)
+{
+    DATA* tmp = new DATA();
+    DATA* ptr = tmp;
+    while(left && right){
+        if(left->val < right->val){
+            tmp->next = left;
+            tmp = tmp->next;
+            left = left->next;
+        }
+        else if(left->val >= right->val){
+            tmp->next = right;
+            tmp = tmp->next;
+            right = right->next;
+        }
+        else printf("something wrong in merge\n");
+    }
+    if(left) tmp->next = left;
+    if(right) tmp->next = right;
+    DATA* head = ptr->next;
+    delete ptr;
+    return head;
+}
+
+DATA* mergesort(DATA* head)
+{
+    if(!head || !head->next) return head;
+    DATA* slow = head;
+    DATA* fast = head->next;
+    while(fast && fast->next){
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    fast = slow->next;
+    slow->next = NULL;
+    DATA* left = mergesort(head);
+    DATA* right = mergesort(fast);
+    return merge(left,right);
+}

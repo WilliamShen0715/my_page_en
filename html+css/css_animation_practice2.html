@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>css animation practice2</title>
+	<style type="text/css">
+		@keyframes animation1{
+			from{left: 100px;top:0px;}
+			25%{left: 300px;top: 300px;}
+			50%{left: 500px;top:700px;}
+			75%{left: 750px;top: 0px;}
+			to{left: 100px;top: 0px;}
+		}
+		@keyframes rotate{
+			from{transform: translate(0px,0px) rotate(0deg) skew(0deg,0deg) scale(1,1);}
+			20%{transform: translate(100px,400px) rotate(90deg) skew(10deg,10deg) scale(1,2);}
+			40%{transform: translate(200px,200px) rotate(180deg) skew(10deg,10deg) scale(2,1);}
+			60%{transform: translate(200px,200px) rotate(270deg) skew(10deg,10deg) scale(2,2);} 
+			80%{transform: translate(100px,400px) rotate(180deg) skew(10deg,10deg) scale(1,1);}
+			to{transform: translate(0px,0px) rotate(0deg) skew(0deg,0deg) scale(1,1);}
+		}
+		#ani{
+			width: 500px;height: 300px;
+			background-color: aqua;
+			animation-name: animation1;
+			position: relative;
+			animation-timing-function: ease;
+			animation-duration: 5s;
+			animation-delay: 1s;
+			animation-iteration-count: 5;
+			animation-direction: alternate;
+			animation-fill-mode: forwards;
+		}
+		#ro{
+			width: 250px;height: 150px;
+			background-color: pink;
+			position: relative;
+			animation: rotate 5s 3 ease;
+			text-align: center;
+		}
+		#threeD{
+			width: 250px;height: 150px;
+			left: 1200px;top: 400px;
+			position: absolute;
+			z-index: 2;
+			background-color: yellow;
+			transform: perspective(250px) rotateX(30deg);
+			transform-origin: center bottom;
+		}
+		#base{
+			width: 250px;height: 150px;
+			left: 1200px;top: 400px;
+			position: absolute;
+			z-index: 1;
+			background-color: lightgreen;
+		}
+		div:hover{animation-play-state:paused;}
+	</style>
+</head>
+<body>
+	<div id="ani">
+		<pre style="text-align: center;">
+animation-name: animation1;
+position: relative;
+animation-timing-function: ease;
+animation-duration: 5s;
+animation-delay: 1s;
+animation-iteration-count: 5;
+animation-direction: alternate;
+animation-fill-mode: forwards;
+		</pre>
+	</div>
+	<div id="ro">
+		animation: rotate 5s infinite ease
+		transform: translate(0px,0px) rotate(0deg) skew(0deg,0deg)(推移) scale(1,1)
+	</div>
+	<div id="base">base</div>
+	<div id="threeD">3D rotate</div>
+</body>
+</html>

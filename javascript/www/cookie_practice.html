@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="cookie_practice.js"></script>
+	<script type="text/javascript">
+		window.onload = function(){
+			var oForm = document.getElementById('form1');
+			var oUser = document.getElementByName('user');
+			var oPass = document.getElementByName('pass');
+			oForm.onsubmit = function(){
+				setCookie('user',oUser.value,14);
+			};
+			oUser.value=getCookie('user');
+		};
+	</script>
+</head>
+<body>
+	<form id="form1"action="./myAjax.html">
+		username:<input type="txt" name="user"/><br>
+		password:<input type="password" name="pass"/><br>
+		<input type="submit" value="log in">
+	</form>
+</body>
+</html>

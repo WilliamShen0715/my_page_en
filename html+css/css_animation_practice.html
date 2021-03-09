@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>css animate practice</title>
+	<style type="text/css">
+		h1{
+			width: 500px;height: 300px;
+			background-color: yellow;
+			color: red;
+			transition-duration:2s;
+			transition-delay:0.5s;
+			transition-property:background-color,width,height,color;
+		}
+		h1:hover{background-color: aqua;width: 800px;height: 500px;color: black;}
+		h3:hover{background-color: aqua;width: 800px;height: 500px;color: white;}
+		h3{
+			width: 250px;height: 150px;
+			background-color: pink;
+			color: green;
+			transition: width,height,background-color,color 1.5s ease-in;
+			transition-delay: 1s;
+		}
+	</style>
+</head>
+<body>
+	<pre>
+		transition-duration:2s;
+		transition-delay:0.5s;
+		transition-property:background-color,width,height,color;
+	</pre>
+	<h1 style="transition-timing-function: ease-in;">ease-in(慢到快)</h1>
+	<h1 style="transition-timing-function: ease-out;">ease-out(快到慢)</h1>
+	<h1 style="transition-timing-function: ease;">ease</h1>
+	<h3>transition: width,height,background-color 1.5s 0.3s ease-in;</h3>
+</body>
+</html>

@@ -1,0 +1,35 @@
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int compute(int x,int n,...);
+
+int main(int argc, char *argv[])
+{
+    int x = atoi(argv[1]);
+    int r1,r2,r3;
+    r1 = compute(x,1,3);
+    r2 = compute(x,3,2,4,6);
+    r3 = compute(x,5,1,2,0,7,5);
+    printf("%d\n",r1);
+    printf("%d\n",r2);
+    printf("%d\n",r3);
+}
+
+int compute(int x,int n,...)
+{
+    int i,j,value = 0,sum = 1;
+    va_list flag;
+    va_start(flag,n);
+    value += va_arg(flag,int);
+    for(i=1;i<n;i++){
+        sum *= va_arg(flag,int);
+        for(j=0;j<i;j++){
+            sum *= x;
+        }
+        value += sum;
+        sum = 1;
+    }
+    va_end(flag);
+    return value;
+}

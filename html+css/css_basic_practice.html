@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>css practice:basic</title>
+	<style type="text/css">
+		a:link{color: green;}
+		a:hover{font-weight:bolder;font-size:50px;}
+		a:visited{color:tomato;}
+		a:active{color:black;}
+		:target{background-color:green;}
+		header{text-align: center;}
+		.para{font-variant: small-caps;font-style: italic;}
+		li.para{background-color: yellow;}
+		[class="list"]{color:blue;}
+		li[class="list"]{font-size:40px;}
+		.ncku{white-space:pre-;text-indent: 32px;width:80%;border: 1px solid black;text-overflow:ellipsis;height:150px;line-height: 40px;text-align:justify;overflow: hidden;}
+		.topic{text-shadow:5px 5px 5px navy;font-size:50px;text-align:center;}
+	</style>
+</head>
+<body>
+	<header>
+		<h1><a href="#about_me">About me</a></h1>
+		<p><h1><a href="#juice">My favorite fruit juice</a></h1></p>
+	</header>
+	<br>
+	<hr>
+	<section>
+		<p id="about_me" class="para">My name is William.</p>
+		<p class="para">Nice to meet you!</p>
+		<br>
+		<hr>
+		<h1 id="juice" class="list">My favorite fruit juice</h1>
+		<ol type="i">
+			<li class="list">watermolin</li>
+			<li class="list">apple</li>
+			<li class="para">orange</li>
+		</ol>
+		<br><br><br>
+	</section>
+	<section>
+		<h1 class="topic">about ncku</h1>
+		<p class="ncku">
+		NCKU values holistic education, providing creative and lively instruction that combines large- and small-class study and emphasizes interdisciplinary learning. Selected courses taught entirely in English are offered in 27 departments.
+		</p>
+		<p class="ncku">
+		The school seeks to cultivate world-class, internationally competitive individuals with sincerity and high moral integrity, characteristics that put NCKU graduates among the candidates most sought after by the business community.</p>
+		<p class="ncku">
+		Having laid down a solid foundation in engineering and then expanded into liberal arts and science, NCKU gradually developed into a comprehensive university, establishing colleges such as Medicine and Social Sciences, and even an Art Center and a Museum. The school has repeatedly received funding from the Ministry of Education under the “Aim for the Top University Project" and is widely recognized as a leading university in Taiwan. Looking to the future, NCKU aims to become a worldclass research university with equal emphasis on outstanding teaching quality. Our development strategy has three foci: human resource development, developing distinctive academic strengths, and sustainable infrastructure, in order to keep abreast of other top universities in the world.</p>
+	</section>
+	<footer>
+		<hr>
+		<br><br><br>
+	</footer>
+</body>
+</html>

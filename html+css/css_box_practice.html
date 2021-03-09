@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>css practice3</title>
+	<style type="text/css">
+		#box{width: 800px;height: 800px;background-color: #CCC;display: flex;flex-direction:row;flex-wrap:wrap;text-align: center;}
+		#item{width: 300px;height: 200px;}
+	</style>
+</head>
+<body>
+	align-content: space-around;<br>
+	<div id="box" style="align-content: space-around;">
+		<div id="item" style="background-color: lightgreen;flex:1 1 300px">flex-wrap:wrap, flex:1(grow) 1(shrink) 300px(basis)</div>
+		<div id="item" style="background-color: aqua;order: 1;">order:1</div>
+		<div id="item" style="background-color: yellow;order: 3; flex-grow: 1;">order:3 flexgrow:1</div>
+		<div id="item" style="background-color: tomato;order: 2;">order:2</div>
+		<div id="item" style="background-color: pink;order: 4; flex-grow: 2;">order:4 flexgrow:2</div>
+	</div>
+	<br>
+	align-item:center(垂直方向);justify-content:center(水平方向);
+	<div id="box" style="align-items:center;justify-content: center;">
+		<div style="width:150px;background-color: green;height: 300px;">item1</div>
+		<div style="width:100px;background-color: lightblue;height: 500px;">item2</div>
+		<div style="width:200px;background-color: aqua;height: 400px;align-self: flex-start;">	item3<br>
+		  align-self: flex-start;
+		</div>
+		<div style="width:150px;background-color: purple;height: 600px;">item4</div>
+		<div style="width:50px;background-color: tomato;height: 550px;align-self: flex-end;">	item5<br>
+		   align-self: flex-end;
+		</div>
+	</div>
+</body>
+</html>

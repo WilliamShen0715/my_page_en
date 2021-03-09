@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	<style>
+        #div2 {width:800px;height:90px;position:absolute;overflow:hidden;margin:100px auto;}
+        #getphoto{position:absolute;left: 0;top: 0;}
+        #div2 div img {float:left;width:90px;height:90px;}
+        #bigPicture{width:500px;height:500px;}
+    	</style>
+    	
+    </head>
+    <body background="./img/background.jpg" text="white">
+    	<h1>Am I Cuuuuuuuuuute?</h1>
+        <div><img id="bigPicture" src="./img/1.jpg"/></div>
+        <h2>(Double click button 'Auto' to speed up the main picture rotation)</h2>
+        <button id="btn1" onclick="showLeft()" width="600" height="120">Left(Speed down)</button>
+        <button id="btn3" onclick="showAuto()" width="600" height="120">Auto(Speed up)</button>
+        <button id="btn2" onclick="showRight()" width="600" height="120">Right(Speed down)</button>
+        <button id="btnBGM" onclick="music()" width="600" height="120">Background music(play and pause)</button>
+        <h4>Mouse over small pictures to slow down the rotation :)</h4>
+    	<div id="div2">
+            <div id="getphoto">
+            <a><img src="./img/1.jpg"/></a>
+            <a><img src="./img/2.jpg"/></a>
+            <a><img src="./img/3.jpg"/></a>
+            <a><img src="./img/4.jpg"/></a>
+            <a><img src="./img/5.jpg"/></a>
+            <a><img src="./img/6.jpg"/></a>
+            <a><img src="./img/7.jpg"/></a>
+            <a><img src="./img/8.jpg"/></a>
+            <a><img src="./img/9.jpg"/></a>
+            <a><img src="./img/10.jpg"/></a>
+            <a><img src="./img/11.jpg"/></a>
+            <a><img src="./img/12.jpg"/></a>
+            <a><img src="./img/13.jpg"/></a>
+            <a><img src="./img/14.jpg"/></a>
+            <a><img src="./img/15.jpg"/></a>
+            <a><img src="./img/16.jpg"/></a>
+            <a><img src="./img/17.jpg"/></a>
+            <a><img src="./img/18.jpg"/></a>
+            <a><img src="./img/19.jpg"/></a>
+            <a><img src="./img/20.jpg"/></a>
+            <a></div>
+        </div>
+        <audio id="bgm">
+            <source src="./res/1.mp3" type="audio/mp3">
+            <source src="./res/2.mp3" type="audio/mp3">
+            <source src="./res/3.mp3" type="audio/mp3">
+        </audio>
+        <script type="text/javascript">
+            var oBgm = document.getElementById('bgm');
+            var flag2=0;
+            function music(){
+                if(flag2==0){
+                    oBgm.play();
+                    flag2=1;
+                }else{
+                    oBgm.pause();
+                    flag2=0;
+                };
+            }
+            var obtn1 = document.getElementById('btn1');
+            var obtn2 = document.getElementById('btn2');
+            var obtn3 = document.getElementById('btn3');
+            var oDiv = document.getElementById('div2');
+            console.log(oBgm);
+            var odivin = document.getElementById('getphoto');
+            var x=-1800,i=1,flag=0;
+            odivin.innerHTML =odivin.innerHTML+odivin.innerHTML+odivin.innerHTML+odivin.innerHTML+odivin.innerHTML;
+            function move() {
+                odivin.style.left=x+'px';
+                x=x-1;
+            }
+            function showAuto(){
+                var autoPic=setInterval(function move(){
+                    odivin.style.left=x+'px';
+                    x=x-1;
+                    if((-x)%80==0) i++;
+                    if(i==21) i=1;
+                    bigPicture.src='./img/'+i+'.jpg';
+                    if(flag==1){
+                        flag=0;
+                        clearInterval(autoPic);
+                    };
+                },50);
+                
+                oDiv.onmouseover = function(){
+                    clearInterval(autoPic);
+                };
+            }
+           function showRight(){
+                odivin.style.left=x+'px';
+                x=x-90;
+                if(i==20) i=0;
+                i++;
+                bigPicture.src='./img/'+i+'.jpg';
+                flag = 1;
+            }
+            function showLeft(){
+                odivin.style.left=x+'px';
+                x=x+90;
+                if(i==1) i=21;
+                i--;
+                bigPicture.src='./img/'+i+'.jpg';
+                flag=1;
+            }
+        </script>
+    </body>
+</html>

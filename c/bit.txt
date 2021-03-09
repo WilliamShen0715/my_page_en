@@ -1,0 +1,221 @@
+(hw4a)
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char*argv[])
+{
+    FILE *ifp, *ofp;
+    int ftwo[32],dtwo[64];
+    char fbit[32],dbit[64];
+    int i,i2,i3,i4,i5,i6;
+    float f;
+    double d;
+    ifp = fopen(argv[1],"r");
+    ofp = fopen("output_a","w");
+    fscanf(ifp,"%f",&f);
+    fscanf(ifp,"%lf",&d);
+    fscanf(ifp,"%s",fbit);
+    fscanf(ifp,"%s",dbit);
+    int* fipt;
+//f to bit
+    fipt = (int*)&f;
+    for(i=sizeof(f)*8-1;i>=0;i--){
+        ftwo[i] = *fipt&1;
+        *fipt>>=1;
+    }
+    for(i2=0;i2<(int)sizeof(f)*8;i2++){
+        fprintf(ofp,"%d",ftwo[i2]);
+    }
+    putc('\n',ofp);
+//d to bit
+    long long int* dipt;
+    dipt = (long long int*)&d;
+    for(i3=sizeof(d)*8-1;i3>=0;i3--){
+        dtwo[i3] = *dipt&1;
+        *dipt>>=1;
+    }
+    for(i4=0;i4<(int)sizeof(d)*8;i4++){
+        fprintf(ofp,"%d",dtwo[i4]);
+    }
+    putc('\n',ofp);
+//f bit to f
+    *fipt = 0;
+    for(i5=0;i5<(int)sizeof(f)*8-1;i5++){
+
+        *fipt += fbit[i5]-'0';
+        *fipt<<=1;
+        //printf("%d\n",*fipt);
+    }
+    fprintf(ofp,"%.100g",f);
+    putc('\n',ofp);
+//d bit to d
+    *dipt = 0;
+    for(i6=0;i6<(int)sizeof(d)*8-1;i6++){
+        *dipt |= dbit[i6]-'0';
+        *dipt<<=1;
+    }
+    fprintf(ofp,"%.100g",d);
+    putc('\n',ofp);
+}
+(hw4b)
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char*argv[])
+{
+    FILE *ifp, *ofp;
+    int ftwo[32],dtwo[64];
+    char fbit[32],dbit[64];
+    int i,i2,i3,i4,i5,i6;
+    union{
+        int i;
+        float f;
+    } doggy;
+    union{
+        long long int i;
+        double d;
+    } kitty;
+    ifp = fopen(argv[1],"r");
+    ofp = fopen("output_b","w");
+    fscanf(ifp,"%f",&doggy.f);
+    fscanf(ifp,"%lf",&kitty.d);
+    fscanf(ifp,"%s",fbit);
+    fscanf(ifp,"%s",dbit);
+//f to bit
+    for(i=sizeof(doggy.i)*8-1;i>=0;i--){
+        ftwo[i] = doggy.i&1;
+        doggy.i>>=1;
+    }
+    for(i2=0;i2<(int)sizeof(doggy.i)*8;i2++){
+        fprintf(ofp,"%d",ftwo[i2]);
+    }
+    putc('\n',ofp);
+//d to bit
+    for(i3=sizeof(kitty.i)*8-1;i3>=0;i3--){
+        dtwo[i3] = kitty.i&1;
+        kitty.i>>=1;
+    }
+    for(i4=0;i4<(int)sizeof(kitty.i)*8;i4++){
+        fprintf(ofp,"%d",dtwo[i4]);
+    }
+    putc('\n',ofp);
+//f bit to f
+    doggy.f = 0;
+    for(i5=0;i5<(int)sizeof(doggy.i)*8-1;i5++){
+
+        doggy.i |= fbit[i5]-'0';
+        doggy.i<<=1;
+    }
+    fprintf(ofp,"%.100g",doggy.f);
+    putc('\n',ofp);
+//d bit to d
+    kitty.d = 0;
+    for(i6=0;i6<(int)sizeof(kitty.i)*8-1;i6++){
+        kitty.i |= dbit[i6]-'0';
+        kitty.i<<=1;
+    }
+    fprintf(ofp,"%.100g",kitty.d);
+    putc('\n',ofp);
+}
+(hw4c)
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char*argv[])
+{
+    char fbit[32],dbit[64];
+    struct ManyNum{
+        unsigned num1:1,num2:1,num3:1,num4:1,num5:1,num6:1,num7:1,num8:1;
+        unsigned num9:1,num10:1,num11:1,num12:1,num13:1,num14:1,num15:1,num16:1;
+        unsigned num17:1,num18:1,num19:1,num20:1,num21:1,num22:1,num23:1,num24:1;
+        unsigned num25:1,num26:1,num27:1,num28:1,num29:1,num30:1,num31:1,num32:1;
+    };
+    union{
+        struct ManyNum FN;
+        float f;
+    } doggy;
+    struct SoManyNum{
+        unsigned num1:1,num2:1,num3:1,num4:1,num5:1,num6:1,num7:1,num8:1;
+        unsigned num9:1,num10:1,num11:1,num12:1,num13:1,num14:1,num15:1,num16:1;
+        unsigned num17:1,num18:1,num19:1,num20:1,num21:1,num22:1,num23:1,num24:1;
+        unsigned num25:1,num26:1,num27:1,num28:1,num29:1,num30:1,num31:1,num32:1;
+        unsigned num33:1,num34:1,num35:1,num36:1,num37:1,num38:1,num39:1,num40:1;
+        unsigned num41:1,num42:1,num43:1,num44:1,num45:1,num46:1,num47:1,num48:1;
+        unsigned num49:1,num50:1,num51:1,num52:1,num53:1,num54:1,num55:1,num56:1;
+        unsigned num57:1,num58:1,num59:1,num60:1,num61:1,num62:1,num63:1,num64:1;
+    };
+    union{
+        struct SoManyNum DN;
+        double d;
+    } kitty;
+    freopen(argv[1],"r",stdin);
+    freopen("output_c","w",stdout);
+    scanf("%f",&doggy.f);
+    scanf("%lf",&kitty.d);
+    scanf("%s",fbit);
+    scanf("%s",dbit);
+//f to bit
+    printf("%d%d%d%d",doggy.FN.num32,doggy.FN.num31,doggy.FN.num30,doggy.FN.num29);
+    printf("%d%d%d%d",doggy.FN.num28,doggy.FN.num27,doggy.FN.num26,doggy.FN.num25);
+    printf("%d%d%d%d",doggy.FN.num24,doggy.FN.num23,doggy.FN.num22,doggy.FN.num21);
+    printf("%d%d%d%d",doggy.FN.num20,doggy.FN.num19,doggy.FN.num18,doggy.FN.num17);
+    printf("%d%d%d%d",doggy.FN.num16,doggy.FN.num15,doggy.FN.num14,doggy.FN.num13);
+    printf("%d%d%d%d",doggy.FN.num12,doggy.FN.num11,doggy.FN.num10,doggy.FN.num9);
+    printf("%d%d%d%d",doggy.FN.num8,doggy.FN.num7,doggy.FN.num6,doggy.FN.num5);
+    printf("%d%d%d%d\n",doggy.FN.num4,doggy.FN.num3,doggy.FN.num2,doggy.FN.num1);
+//d to bit
+    printf("%d%d%d%d",kitty.DN.num64,kitty.DN.num63,kitty.DN.num62,kitty.DN.num61);
+    printf("%d%d%d%d",kitty.DN.num60,kitty.DN.num59,kitty.DN.num58,kitty.DN.num57);
+    printf("%d%d%d%d",kitty.DN.num56,kitty.DN.num55,kitty.DN.num54,kitty.DN.num53);
+    printf("%d%d%d%d",kitty.DN.num52,kitty.DN.num51,kitty.DN.num50,kitty.DN.num49);
+    printf("%d%d%d%d",kitty.DN.num48,kitty.DN.num47,kitty.DN.num46,kitty.DN.num45);
+    printf("%d%d%d%d",kitty.DN.num44,kitty.DN.num43,kitty.DN.num42,kitty.DN.num41);
+    printf("%d%d%d%d",kitty.DN.num40,kitty.DN.num39,kitty.DN.num38,kitty.DN.num37);
+    printf("%d%d%d%d",kitty.DN.num36,kitty.DN.num35,kitty.DN.num34,kitty.DN.num33);
+    printf("%d%d%d%d",kitty.DN.num32,kitty.DN.num31,kitty.DN.num30,kitty.DN.num29);
+    printf("%d%d%d%d",kitty.DN.num28,kitty.DN.num27,kitty.DN.num26,kitty.DN.num25);
+    printf("%d%d%d%d",kitty.DN.num24,kitty.DN.num23,kitty.DN.num22,kitty.DN.num21);
+    printf("%d%d%d%d",kitty.DN.num20,kitty.DN.num19,kitty.DN.num18,kitty.DN.num17);
+    printf("%d%d%d%d",kitty.DN.num16,kitty.DN.num15,kitty.DN.num14,kitty.DN.num13);
+    printf("%d%d%d%d",kitty.DN.num12,kitty.DN.num11,kitty.DN.num10,kitty.DN.num9);
+    printf("%d%d%d%d",kitty.DN.num8,kitty.DN.num7,kitty.DN.num6,kitty.DN.num5);
+    printf("%d%d%d%d\n",kitty.DN.num4,kitty.DN.num3,kitty.DN.num2,kitty.DN.num1);
+//f bit to f
+    doggy.f = 0.0;
+    doggy.FN.num32 = fbit[0]-'0';doggy.FN.num31 = fbit[1]-'0';doggy.FN.num30 = fbit[2]-'0';
+    doggy.FN.num29 = fbit[3]-'0';doggy.FN.num28 = fbit[4]-'0';doggy.FN.num27 = fbit[5]-'0';
+    doggy.FN.num26 = fbit[6]-'0';doggy.FN.num25 = fbit[7]-'0';doggy.FN.num24 = fbit[8]-'0';
+    doggy.FN.num23 = fbit[9]-'0';doggy.FN.num22 = fbit[10]-'0';doggy.FN.num21 = fbit[11]-'0';
+    doggy.FN.num20 = fbit[12]-'0';doggy.FN.num19 = fbit[13]-'0';doggy.FN.num18 = fbit[14]-'0';
+    doggy.FN.num17 = fbit[15]-'0';doggy.FN.num16 = fbit[16]-'0';doggy.FN.num15 = fbit[17]-'0';
+    doggy.FN.num14 = fbit[18]-'0';doggy.FN.num13 = fbit[19]-'0';doggy.FN.num12 = fbit[20]-'0';
+    doggy.FN.num11 = fbit[21]-'0';doggy.FN.num10 = fbit[22]-'0';doggy.FN.num9 = fbit[23]-'0';
+    doggy.FN.num8 = fbit[24]-'0';doggy.FN.num7 = fbit[25]-'0';doggy.FN.num6 = fbit[26]-'0';
+    doggy.FN.num5 = fbit[27]-'0';doggy.FN.num4 = fbit[28]-'0';doggy.FN.num3 = fbit[29]-'0';
+    doggy.FN.num2 = fbit[30]-'0';doggy.FN.num1 = fbit[31]-'0';
+    printf("%.100g\n",doggy.f);
+//d bit to d
+    kitty.d = 0.0;
+    kitty.DN.num64 = dbit[0]-'0';kitty.DN.num63 = dbit[1]-'0';kitty.DN.num62 = dbit[2]-'0';
+    kitty.DN.num61 = dbit[3]-'0';kitty.DN.num60 = dbit[4]-'0';kitty.DN.num59 = dbit[5]-'0';
+    kitty.DN.num58 = dbit[6]-'0';kitty.DN.num57 = dbit[7]-'0';kitty.DN.num56 = dbit[8]-'0';
+    kitty.DN.num55 = dbit[9]-'0';kitty.DN.num54 = dbit[10]-'0';kitty.DN.num53 = dbit[11]-'0';
+    kitty.DN.num52 = dbit[12]-'0';kitty.DN.num51 = dbit[13]-'0';kitty.DN.num50 = dbit[14]-'0';
+    kitty.DN.num49 = dbit[15]-'0';kitty.DN.num48 = dbit[16]-'0';kitty.DN.num47 = dbit[17]-'0';
+    kitty.DN.num46 = dbit[18]-'0';kitty.DN.num45 = dbit[19]-'0';kitty.DN.num44 = dbit[20]-'0';
+    kitty.DN.num43 = dbit[21]-'0';kitty.DN.num42 = dbit[22]-'0';kitty.DN.num41 = dbit[23]-'0';
+    kitty.DN.num40 = dbit[24]-'0';kitty.DN.num39 = dbit[25]-'0';kitty.DN.num38 = dbit[26]-'0';
+    kitty.DN.num37 = dbit[27]-'0';kitty.DN.num36 = dbit[28]-'0';kitty.DN.num35 = dbit[29]-'0';
+    kitty.DN.num34 = dbit[30]-'0';kitty.DN.num33 = dbit[31]-'0';kitty.DN.num32 = dbit[32]-'0';
+    kitty.DN.num31 = dbit[33]-'0';kitty.DN.num30 = dbit[34]-'0';kitty.DN.num29 = dbit[35]-'0';
+    kitty.DN.num28 = dbit[36]-'0';kitty.DN.num27 = dbit[37]-'0';kitty.DN.num26 = dbit[38]-'0';
+    kitty.DN.num25 = dbit[39]-'0';kitty.DN.num24 = dbit[40]-'0';kitty.DN.num23 = dbit[41]-'0';
+    kitty.DN.num22 = dbit[42]-'0';kitty.DN.num21 = dbit[43]-'0';kitty.DN.num20 = dbit[44]-'0';
+    kitty.DN.num19 = dbit[45]-'0';kitty.DN.num18 = dbit[46]-'0';kitty.DN.num17 = dbit[47]-'0';
+    kitty.DN.num16 = dbit[48]-'0';kitty.DN.num15 = dbit[49]-'0';kitty.DN.num14 = dbit[50]-'0';
+    kitty.DN.num13 = dbit[51]-'0';kitty.DN.num12 = dbit[52]-'0';kitty.DN.num11 = dbit[53]-'0';
+    kitty.DN.num10 = dbit[54]-'0';kitty.DN.num9 = dbit[55]-'0';kitty.DN.num8 = dbit[56]-'0';
+    kitty.DN.num7 = dbit[57]-'0';kitty.DN.num6 = dbit[58]-'0';kitty.DN.num5 = dbit[59]-'0';
+    kitty.DN.num4 = dbit[60]-'0';kitty.DN.num3 = dbit[61]-'0';kitty.DN.num2 = dbit[62]-'0';
+    kitty.DN.num1 = dbit[63]-'0';
+    printf("%.100g\n",kitty.d);

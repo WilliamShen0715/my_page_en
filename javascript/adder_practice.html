@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script>
+			window.onload=function()
+			{
+				var oleft = document.getElementById('left');
+				var oright = document.getElementById('right');
+				var obtn = document.getElementById('btn');
+				obtn.onclick=function(){
+					alert(parseInt(oleft.value)+parseInt(oright.value));
+					};
+			}
+		</script>
+	</head>
+	<body>
+		<h1>simple adder</h1>
+		<a>value1:</a><input id="left" type="text">
+		<a>value2:</a><input id="right" type="text">
+		<input id="btn" type="button" value="Enter(add two number)">
+
+	</body>
+</html>

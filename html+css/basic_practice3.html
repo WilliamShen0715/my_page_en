@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style> 
+            .animation {
+                position: relative;
+                animation-name: hungry;
+                animation-duration: 4s;
+		animation-delay: 1s;
+		animation-iteration-count: 100;
+            }
+            @keyframes hungry {
+                0%   { left:0px; top:0px;}
+                25%  { left:500px; top:500px;}
+                50%  { left:500px; top:0px;}
+                75%  { left:0px; top:500px;}
+                100% { left:0px; top:0px;}
+            }
+        </style>
+    </head>
+    <body>
+        <div class="animation"><img src="../res/picture.jpg"width="500px" height="500px"></div>
+        <p></p>
+    </body>
+</html>

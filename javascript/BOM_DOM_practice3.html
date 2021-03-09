@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>BOM/DOM practice3</title>
+</head>
+<body>
+	<h1>lacation information:</h1>
+	<ul type="i">
+		<li id="hash">hash(網址#後面的部分):</li>
+		<li id="host">host:</li>
+		<li id="hostname">hostname:</li>
+		<li id="href">href:</li>
+		<li id="pathname">pathname:</li>
+		<li id="port">port:</li>
+		<li id="search">search(傳入網頁?後面的資訊):</li>
+	</ul>
+<script type="text/javascript">
+	var oHash = document.getElementById('hash');
+	var oHost = document.getElementById('host');
+	var oHostname = document.getElementById('hostname');
+	var oHref = document.getElementById('href');
+	var oPathname = document.getElementById('pathname');
+	var oPort = document.getElementById('port');
+	var oSearch = document.getElementById('search');
+	oHash.innerHTML += window.location.hash;
+	oHost.innerHTML += window.location.host;
+	oHostname.innerHTML += window.location.hostname;
+	oHref.innerHTML += window.location.href;
+	oPathname.innerHTML += window.location.pathname;
+	oPort.innerHTML += window.location.port;
+	oSearch.innerHTML += window.location.search;
+</script>
+</body>
+</html>

@@ -1,0 +1,784 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+struct DATA{
+    unsigned ip;
+    int len;
+    struct DATA *next;
+};
+
+struct GROUPLIST{
+    int group_num;
+    struct GROUPLIST* next;
+    struct DATA* list;
+};
+
+typedef struct DATA DATA;
+typedef struct GROUPLIST GROUPLIST;
+
+int count=0,groups=1;
+FILE* ript,*iipt,*dipt,*tipt,*lopt,*aopt,*bopt,*copt;
+
+void input(DATA* head);
+DATA* merge(DATA* left,DATA* right);
+DATA* mergesort(struct DATA* head);
+GROUPLIST* segment(int d,DATA* head,GROUPLIST* ghead);
+void length_distribution(DATA* head);
+void search(GROUPLIST* ghead,int d,FILE* ptr);
+DATA* inserted_prefixed(DATA* head);
+GROUPLIST* deleted_prefixes(int d, GROUPLIST* ghead);
+
+int main(int argc,char* argv[])
+{
+	int i,d;
+	DATA *head = malloc(sizeof(DATA));
+	GROUPLIST* ghead = malloc(sizeof(GROUPLIST));
+    input(head);
+    d = atoi(argv[1]);
+    head = mergesort(head);
+    length_distribution(head);
+    ghead = segment(d,head,ghead);
+    aopt = fopen("output_1","w");
+    search(ghead,d,aopt);
+    
+    head = inserted_prefixed(head);
+    head = mergesort(head);
+    ghead = segment(d,head,ghead);
+    bopt = fopen("output_2","w");
+    search(ghead,d,bopt);
+
+    ghead = deleted_prefixes(d,ghead);
+    copt = fopen("output_3","w");
+	search(ghead,d,copt);
+	
+	
+}
+
+void input(DATA* head)
+{
+    unsigned tmpnum = 0,bittmp[8],ip_num = 0,first = 0,num[4];
+    int i,j,k,flag,len,num_len = 0;
+    char data[18];
+    char *ptr;
+    ript = fopen("routing_table.txt","r");
+//deal with the first data
+    fscanf(ript,"%s",data);
+    ptr = &data[0];
+    flag = 0;
+    for(j=0;j<4;j++){
+        if(j != 3) for(;*ptr != '.';ptr++) num_len++;
+        else if(j == 3){
+            if(*(ptr+1) != '/' && *(ptr+2) != '/' && *(ptr+3) && '/'){
+                flag = 1;
+                len = 32;
+                if(*(ptr+1) == '\0'){
+                	num_len = 1;
+                	ptr++;
+				}
+                else if(*(ptr+2) == '\0'){
+                	num_len = 2;
+                	ptr+=2; 
+				}
+                else if(*(ptr+3) == '\0'){
+                	num_len = 3;
+                	ptr+=3;
+				}
+                else printf("something wrong in checking input with no / \n");
+            }
+            else for(;*ptr != '/';ptr++) num_len++;
+        }
+        if(num_len == 1){
+            ptr--;
+            num[j] = *ptr -'0';
+        }
+        else if(num_len == 2){
+            ptr -= 2;
+            tmpnum += (*ptr -'0')*10;
+            ptr++;
+            tmpnum += *ptr -'0';
+            num[j] = tmpnum;
+        }
+        else if(num_len == 3){
+            ptr -= 3;
+            tmpnum += (*ptr -'0')*100;
+            ptr++;
+            tmpnum += (*ptr -'0')*10;
+            ptr++;
+            tmpnum += *ptr -'0';
+            num[j] = tmpnum;
+        }
+        else{
+            printf("somhting wrong in collecting ip\n");
+            break;
+        }
+        tmpnum = 0;
+        num_len = 0;
+        if(flag == 1) continue;
+        ptr += 2;
+    }
+    if(flag == 0){
+        if(*(ptr+1) == '\0') len = *ptr-'0';
+        else{
+            tmpnum += (*ptr - '0')*10;
+            ptr++;
+            tmpnum += *ptr - '0';
+            len = tmpnum;
+            tmpnum = 0;
+        }
+    }
+//change ip numbers to bit pattern and collect by int
+    for(j=0;j<4;j++){
+        for(k=0;k<8;k++){
+            bittmp[7-k] = num[j]&1;
+            num[j]>>=1;
+        }
+        for(k=0;k<8;k++){
+            first |= bittmp[k];
+            first<<=1;
+        }
+    }
+    count++;
+
+    head -> ip = first;
+    head -> len = len;
+    head -> next = NULL;
+    
+//deal with the following data
+    DATA *current = head;
+	while(fscanf(ript,"%s",data)!=EOF){
+        fscanf(ript,"%s",data);
+        
+        ptr = &data[0];
+        flag = 0;
+        for(j=0;j<4;j++){
+                if(j != 3) for(;*ptr != '.';ptr++) num_len++;
+                else if(j == 3){
+            		if(*(ptr+1) != '/' && *(ptr+2) != '/' && *(ptr+3) != '/'){
+                		flag = 1;
+                		len = 32;
+                		if(*(ptr+1) == '\0'){
+                			num_len = 1;
+                			ptr++;
+						}
+                		else if(*(ptr+2) == '\0'){
+                			num_len = 2;
+                			ptr+=2; 
+						}
+                		else if(*(ptr+3) == '\0'){
+                			num_len = 3;
+                			ptr+=3;
+						}
+                		else printf("something wrong in checking input with no / \n");
+            		}
+            		else for(;*ptr != '/';ptr++) num_len++;
+        		}
+                if(num_len == 1){
+                    ptr--;
+                    num[j] = *ptr -'0';
+                }
+                else if(num_len == 2){
+                    ptr -= 2;
+                    tmpnum += (*ptr -'0')*10;
+                    ptr++;
+                    tmpnum += *ptr -'0';
+                    num[j] = tmpnum;
+                }
+                else if(num_len == 3){
+                    ptr -= 3;
+                    tmpnum += (*ptr -'0')*100;
+                    ptr++;
+                    tmpnum += (*ptr -'0')*10;
+                    ptr++;
+                    tmpnum += *ptr -'0';
+                    num[j] = tmpnum;
+                }
+                else{
+                    printf("somhting wrong in collecting ip\n");
+                    break;
+                }
+                tmpnum = 0;
+                num_len = 0;
+                if(flag == 1) continue;
+                ptr += 2;
+        }
+        if(flag == 0){
+            if(*(ptr+1) == '\0') len = *ptr-'0';
+            else{
+                tmpnum += (*ptr - '0')*10;
+                ptr++;
+                tmpnum += *ptr - '0';
+                len = tmpnum;
+                tmpnum = 0;
+            }
+        }
+//change ip numbers to bit pattern and collect by int
+        for(j=0;j<4;j++){
+            for(k=0;k<8;k++){
+                bittmp[7-k] = num[j]&1;
+                num[j]>>=1;
+            }
+            for(k=0;k<8;k++){
+                ip_num |= bittmp[k];
+                ip_num<<=1;
+            }
+        }       
+        count++;
+        
+        current -> next = malloc(sizeof(DATA));
+        current = current -> next;
+        current -> ip = ip_num;
+        current -> len = len;
+        current -> next = NULL;
+    }
+    fclose(ript);
+}
+
+DATA* merge(DATA* left,DATA* right)
+{
+    DATA* tmp = malloc(sizeof(DATA));
+    DATA* ptr = tmp;
+    while(left && right){
+        if(left->ip < right->ip){
+            tmp->next = left;
+            tmp = tmp->next;
+            left = left->next;
+        }
+        else if(left->ip >= right->ip){
+            tmp->next = right;
+            tmp = tmp->next;
+            right = right->next;
+        }
+        else printf("something wrong in merge\n");
+    }
+    if(left) tmp->next = left;
+    if(right) tmp->next = right;
+    DATA* head = ptr->next;
+    free(ptr);
+    return head;
+}
+
+DATA* mergesort(DATA* head)
+{
+    if(!head || !head->next) return head;
+    DATA* slow = head;
+    DATA* fast = head->next;
+    while(fast && fast->next){
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    fast = slow->next;
+    slow->next = NULL;
+    DATA* left = mergesort(head);
+    DATA* right = mergesort(fast);
+    return merge(left,right);
+}
+
+GROUPLIST* segment(int d,DATA* head,GROUPLIST* ghead)
+{
+    //how many groups
+    int i,j,k;
+    
+    for(i=0;i<d;i++) groups*=2;
+    groups++;
+    
+    unsigned num_array[d],tmp_num=0,tmp_val;
+    int nums_in_group[groups];
+    
+    ghead -> group_num = 0;
+    ghead -> next = NULL;
+    ghead -> list = NULL;
+    GROUPLIST* current = ghead;
+    DATA* dcurrent = head;
+
+	for(i=1;i<groups;i++){
+        current -> next = malloc(sizeof(GROUPLIST));
+        current = current->next;
+        current -> group_num  = i;
+        current -> next = NULL;
+        current -> list = NULL;
+    }
+//initialize nums_in_group
+    for(i=0;i<count;i++) nums_in_group[i]=0;	
+//decide the first data
+	DATA* strlist[groups];	
+    current = ghead;
+    if(d <= dcurrent->len){
+        tmp_val = dcurrent-> ip;
+		tmp_val >>= (32-d);
+        for(j=d;j>=0;j--){
+            num_array[j] = tmp_val&1;
+            tmp_num += num_array[j];
+            if(j!=0) tmp_num <<= 1;
+            tmp_val >>= 1;
+        }
+        
+        for(k=1;k<(int)tmp_num;k++) current = current-> next;
+        current->list = malloc(sizeof(DATA));
+        strlist[tmp_num] = current->list;
+        strlist[tmp_num]->ip = head->ip;
+        strlist[tmp_num]->len = head->len;
+        strlist[tmp_num]->next = NULL;
+    }
+    if(d > dcurrent->len){
+    	tmp_num = groups-1;
+        for(k=1;k<groups;k++) current = current-> next;
+		current->list = malloc(sizeof(DATA));
+        strlist[tmp_num] = current->list;
+        strlist[tmp_num]->ip = head->ip;
+        strlist[tmp_num]->len = head->len;
+        strlist[tmp_num]->next = NULL;
+        tmp_num = groups-1;
+    }
+    nums_in_group[(int)tmp_num]++;
+    tmp_num = 0;
+//deal with the following data
+    for(i=1;i<count;i++){
+        current = ghead;
+        if(d <= dcurrent->next->len){
+            tmp_val = dcurrent-> ip;
+			tmp_val >>= (32-d);
+        	for(j=d;j>=0;j--){
+            	num_array[j] = tmp_val&1;
+            	tmp_num += num_array[j];
+            	if(j!=0) tmp_num <<= 1;
+            	tmp_val >>= 1;
+        	}
+            for(k=1;k<(int)tmp_num;k++) current = current-> next;
+            if(!current->list){
+            	current->list = malloc(sizeof(DATA));
+            	strlist[tmp_num] = current->list;
+            	strlist[tmp_num]->ip = dcurrent->next->ip;
+            	strlist[tmp_num]->len = dcurrent->next->len;
+            	strlist[tmp_num]->next = NULL;
+				strlist[tmp_num]->next = NULL;
+            }
+			else{
+				strlist[tmp_num]->next = malloc(sizeof(DATA));
+            	strlist[tmp_num]->next->ip = dcurrent->next->ip;
+            	strlist[tmp_num]->next->len = dcurrent->next->len;
+            	strlist[tmp_num] = strlist[tmp_num]->next;
+            	strlist[tmp_num]->next = NULL;
+			}
+            dcurrent = dcurrent->next;          
+            nums_in_group[(int)tmp_num]++;
+            tmp_num = 0;
+        }
+        
+        
+        
+        else if(d > dcurrent->next->len){
+        	for(k=1;k<groups;k++) current = current-> next;        	       	
+        	if(!current->list){
+            	current->list = malloc(sizeof(DATA));
+            	strlist[groups-1] = current->list;
+            	strlist[groups-1]->ip = dcurrent->next->ip;
+            	strlist[groups-1]->len = dcurrent->next->len;
+            	strlist[groups-1]->next = NULL;
+            }
+            else{
+            	strlist[groups-1]->next = malloc(sizeof(DATA));
+            	strlist[groups-1]->next->ip = dcurrent->next->ip;
+            	strlist[groups-1]->next->len = dcurrent->next->len;
+            	strlist[groups-1]->next->next = NULL;
+            	strlist[groups-1] = strlist[groups-1]->next;
+            	strlist[groups-1]->next = NULL;
+			}
+            dcurrent = dcurrent->next;
+            nums_in_group[groups-1]++;
+            tmp_num = 0;
+        }
+    }
+    return ghead;
+}
+
+void length_distribution(DATA* head)
+{
+	int i,num=0;
+	
+	for(i=0;i<33;i++){
+		DATA* current = head;
+		while(current->next){
+			if(current->len == i) num++;
+			current = current->next;
+		}
+		if(current->len == i) num++;
+		printf("%d\n",num);
+		num = 0;
+	}
+}
+
+void search(GROUPLIST* ghead,int d,FILE* fptr){
+	unsigned tmpnum = 0,bittmp[8],ip_num = 0,tmp_num=0,tmp_val,num[4];
+    int i,j,k,flag=0,num_len = 0,num_array[d];
+	char data[18];
+    char *ptr;
+    DATA* current;
+    GROUPLIST* gcurrent;
+    tipt = fopen("trace_file.txt","r");
+	while(fscanf(tipt,"%s",data)!=EOF){
+        fscanf(tipt,"%s",data);        
+        ptr = &data[0];
+        for(j=0;j<4;j++){
+            if(j != 3) for(;*ptr != '.';ptr++) num_len++;
+            else if(j == 3){
+                if(*(ptr+1) == '\0'){
+                	num_len = 1;
+                	ptr++;
+				}
+                else if(*(ptr+2) == '\0'){
+                	num_len = 2;
+                	ptr+=2; 
+				}
+                else if(*(ptr+3) == '\0'){
+                	num_len = 3;
+                	ptr+=3;
+				}
+                else printf("something wrong in checking input with no / \n");
+            }
+                       
+                if(num_len == 1){
+                    ptr--;
+                    num[j] = *ptr -'0';
+                }
+                else if(num_len == 2){
+                    ptr -= 2;
+                    tmpnum += (*ptr -'0')*10;
+                    ptr++;
+                    tmpnum += *ptr -'0';
+                    num[j] = tmpnum;
+                }
+                else if(num_len == 3){
+                    ptr -= 3;
+                    tmpnum += (*ptr -'0')*100;
+                    ptr++;
+                    tmpnum += (*ptr -'0')*10;
+                    ptr++;
+                    tmpnum += *ptr -'0';
+                    num[j] = tmpnum;
+                }
+                else{
+                    printf("somhting wrong in collecting ip\n");
+                    break;
+                }
+                tmpnum = 0;
+                num_len = 0;
+                if(j!=3) ptr += 2;
+        }
+//change ip numbers to bit pattern and collect by int
+        for(j=0;j<4;j++){
+            for(k=0;k<8;k++){
+                bittmp[7-k] = num[j]&1;
+                num[j]>>=1;
+            }
+            for(k=0;k<8;k++){
+                ip_num |= bittmp[k];
+                ip_num<<=1;
+            }
+        }
+//decide which group
+		tmp_val = ip_num;
+		tmp_val >>= (32-d);
+        for(j=d;j>=0;j--){
+            num_array[j] = tmp_val&1;
+            tmp_num += num_array[j];
+            if(j!=0) tmp_num <<= 1;
+            tmp_val >>= 1;
+        }
+//go to its group and check
+		gcurrent = ghead;
+		for(j=1;j<(int)tmp_num;j++) gcurrent = gcurrent-> next;
+        if(gcurrent->list){
+        	current = gcurrent->list;
+        	for(j=0;j<current->len;j++){
+        		if((current->ip>>(31-j)&1) != (ip_num>>(31-j)&1)){
+        			flag = 1;
+        			break;
+				}
+			}
+			if(flag==0) fprintf(fptr,"successful.\n");
+			while(current->next && flag == 1){
+				flag = 0;
+				current = current->next;
+				for(j=0;j<current->len;j++){
+        			if((current->ip>>(31-j)&1) != (ip_num>>(31-j)&1)){
+        				flag = 1;
+        				break;
+					}
+				}
+				if(flag==0) fprintf(fptr,"successful.\n");
+			}
+			if(flag == 0) continue;
+		}
+		gcurrent = ghead;
+		for(j=1;j<groups;j++) gcurrent = gcurrent->next;
+		if(gcurrent->list){
+        	current = gcurrent->list;
+        	for(j=0;j<current->len;j++){
+        		if((current->ip>>(31-j)&1) != (ip_num>>(31-j)&1)){
+        			flag = 1;
+        			break;
+				}
+			}
+			if(flag==0) fprintf(fptr,"successful.\n");
+			while(current->next && flag == 1){
+				flag = 0;
+				current = current->next;
+				for(j=0;j<current->len;j++){
+        			if((current->ip>>(31-j)&1) != (ip_num>>(31-j)&1)){
+        				flag = 1;
+        				break;
+					}
+				}
+				if(flag==0) fprintf(fptr,"successful.\n");
+			}
+			if(flag == 0) continue;
+		}
+		fprintf(fptr,"failed.");
+	}
+	fclose(tipt);
+	fclose(fptr);
+}
+
+DATA* inserted_prefixed(DATA* head)
+{
+	unsigned tmpnum = 0,bittmp[8],ip_num = 0,num[4];
+    int i,j,k,flag,len,num_len = 0;
+    char data[18];
+    char *ptr;
+    DATA *current = head;
+    while(current->next) current = current->next;
+    iipt = fopen("inserted_prefixes.txt","r");
+    while(fscanf(iipt,"%s",data)!=EOF){
+        fscanf(iipt,"%s",data);  
+        ptr = &data[0];
+        flag = 0;
+        for(j=0;j<4;j++){
+                if(j != 3) for(;*ptr != '.';ptr++) num_len++;
+                else if(j == 3){
+            		if(*(ptr+1) != '/' && *(ptr+2) != '/' && *(ptr+3) != '/'){
+                		flag = 1;
+                		len = 32;
+                		if(*(ptr+1) == '\0'){
+                			num_len = 1;
+                			ptr++;
+						}
+                		else if(*(ptr+2) == '\0'){
+                			num_len = 2;
+                			ptr+=2; 
+						}
+                		else if(*(ptr+3) == '\0'){
+                			num_len = 3;
+                			ptr+=3;
+						}
+                		else printf("something wrong in checking input with no / \n");
+            		}
+            		else for(;*ptr != '/';ptr++) num_len++;
+        		}
+                if(num_len == 1){
+                    ptr--;
+                    num[j] = *ptr -'0';
+                }
+                else if(num_len == 2){
+                    ptr -= 2;
+                    tmpnum += (*ptr -'0')*10;
+                    ptr++;
+                    tmpnum += *ptr -'0';
+                    num[j] = tmpnum;
+                }
+                else if(num_len == 3){
+                    ptr -= 3;
+                    tmpnum += (*ptr -'0')*100;
+                    ptr++;
+                    tmpnum += (*ptr -'0')*10;
+                    ptr++;
+                    tmpnum += *ptr -'0';
+                    num[j] = tmpnum;
+                }
+                else{
+                    printf("somhting wrong in collecting ip\n");
+                    break;
+                }
+                tmpnum = 0;
+                num_len = 0;
+                if(flag == 1) continue;
+                ptr += 2;
+        }
+        if(flag == 0){
+            if(*(ptr+1) == '\0') len = *ptr-'0';
+            else{
+                tmpnum += (*ptr - '0')*10;
+                ptr++;
+                tmpnum += *ptr - '0';
+                len = tmpnum;
+                tmpnum = 0;
+            }
+        }
+//change ip numbers to bit pattern and collect by int
+        for(j=0;j<4;j++){
+            for(k=0;k<8;k++){
+                bittmp[7-k] = num[j]&1;
+                num[j]>>=1;
+            }
+            for(k=0;k<8;k++){
+                ip_num |= bittmp[k];
+                ip_num<<=1;
+            }
+        }       
+        count++;       
+        current -> next = malloc(sizeof(DATA));
+        current = current -> next;
+        current -> ip = ip_num;
+        current -> len = len;
+        current -> next = NULL;
+    }
+    fclose(iipt);
+}
+
+GROUPLIST* deleted_prefixes(int d, GROUPLIST* ghead)
+{
+	unsigned tmpnum = 0,bittmp[8],ip_num = 0,tmp_num=0,tmp_val,num[4];
+    int i,j,k,flag=0,num_len = 0,num_array[d],len;
+	char data[18];
+    char *ptr;
+    DATA* current;
+	DATA* tmp;
+    GROUPLIST* gcurrent;
+    dipt = fopen("delete_prefixes.txt","r");
+	while(fscanf(dipt,"%s",data)!=EOF){
+        fscanf(dipt,"%s",data); 
+        ptr = &data[0];
+        flag = 0;
+        for(j=0;j<4;j++){
+        	if(j != 3) for(;*ptr != '.';ptr++) num_len++;
+            else if(j == 3){
+            	if(*(ptr+1) != '/' && *(ptr+2) != '/' && *(ptr+3) != '/'){
+                	flag = 1;
+                	len = 32;
+                	if(*(ptr+1) == '\0'){
+                		num_len = 1;
+                		ptr++;
+					}
+                	else if(*(ptr+2) == '\0'){
+                		num_len = 2;
+                		ptr+=2; 
+					}
+                	else if(*(ptr+3) == '\0'){
+                		num_len = 3;
+                		ptr+=3;
+					}
+                	else printf("something wrong in checking input with no / \n");
+            	}
+            	else for(;*ptr != '/';ptr++) num_len++;
+        	}
+            if(num_len == 1){
+                ptr--;
+                num[j] = *ptr -'0';
+            }
+            else if(num_len == 2){
+                ptr -= 2;
+                tmpnum += (*ptr -'0')*10;
+                ptr++;
+                tmpnum += *ptr -'0';
+                num[j] = tmpnum;
+            }
+            else if(num_len == 3){
+                ptr -= 3;
+                tmpnum += (*ptr -'0')*100;
+                ptr++;
+                tmpnum += (*ptr -'0')*10;
+                ptr++;
+                tmpnum += *ptr -'0';
+                num[j] = tmpnum;
+            }
+            else{
+                printf("somhting wrong in collecting ip\n");
+                break;
+            }
+            tmpnum = 0;
+            num_len = 0;
+            if(flag == 1) continue;
+            ptr += 2;
+        }
+        if(flag == 0){
+            if(*(ptr+1) == '\0') len = *ptr-'0';
+            else{
+                tmpnum += (*ptr - '0')*10;
+                ptr++;
+                tmpnum += *ptr - '0';
+                len = tmpnum;
+                tmpnum = 0;
+            }
+        }
+//change ip numbers to bit pattern and collect by int
+        for(j=0;j<4;j++){
+            for(k=0;k<8;k++){
+                bittmp[7-k] = num[j]&1;
+                num[j]>>=1;
+            }
+            for(k=0;k<8;k++){
+                ip_num |= bittmp[k];
+                ip_num<<=1;
+            }
+        }
+        flag = 0;
+//go to its group and delete
+		gcurrent = ghead;
+		for(j=1;j<(int)tmp_num;j++) gcurrent = gcurrent-> next;
+        if(gcurrent->list){
+        	tmp = gcurrent->list;
+        	if(tmp->ip == ip_num && tmp->len == len){
+        		gcurrent->list = NULL;
+        		free(tmp);
+        		return ghead;
+			}
+			current = gcurrent->list;
+			while(current->next){
+				tmp = current->next;
+				if(tmp->ip == ip_num && tmp->len == len){
+        			if(tmp->next){
+        				current->next = tmp->next;
+						current = current->next;
+						free(tmp);
+						return ghead;
+					}
+					else{
+						current->next = NULL;
+						free(tmp);
+						return ghead;
+					}
+				}
+				current = current->next;
+			}
+		}
+		gcurrent = ghead;
+		for(j=1;j<groups;j++) gcurrent = gcurrent->next;
+		if(gcurrent->list){			
+        	tmp = gcurrent->list;
+        	if(tmp->ip == ip_num && tmp->len == len){
+        		gcurrent->list = NULL;
+        		free(tmp);
+        		return ghead;
+			}
+			current = gcurrent->list;
+		}
+		while(current->next){
+			tmp = current->next;
+			if(tmp->ip == ip_num && tmp->len == len){
+        		if(tmp->next){
+        			current->next = tmp->next;
+					current = current->next;
+					free(tmp);
+					return ghead;
+				}
+				else{
+					current->next = NULL;
+					free(tmp);
+					return ghead;
+				}
+			}
+			current = current->next;
+		}
+	}
+	fclose(dipt);
+	return ghead;
+}

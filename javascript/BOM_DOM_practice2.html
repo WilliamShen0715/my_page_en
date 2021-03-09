@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Bom/Dom practice2</title>
+</head>
+<body>
+  <h1>迷你時鐘</h1>
+  <h3 id="demo"></h3>
+  <input type="button" id="start" value="啟動">
+  <input type="button" id="pause" value="暫停">
+  <br><br>
+  <h1>取得圖片大小位置</h1>
+  <img src="../res/photo.jpg" style="width: 13%" id="jpg">
+  <p></p>
+  <br>
+  <h1>節點的建立，插入，刪除，取代</h1>
+  <ul type="I" id="myList">
+  	<li>111111</li>
+  	<li>222222</li>
+  </ul>
+  <input type="button" onclick="addNewNode()" value="新增節點">
+  <input type="button" onclick="insertNode()" value="插入節點">
+  <input type="button" onclick="removeNode()" value="刪除節點">
+  <input type="button" onclick="replaceNode()" value="取代節點">
+  <script type="text/javascript">
+//practice1	
+	  var oBtn1 = document.getElementById('start');
+	  var oBtn2 = document.getElementById('pause');
+	  var oDemo = document.getElementById('demo');
+	  var timer;
+	  function stop(){
+	    clearInterval(timer);
+        oDemo.innerHTML = "時鐘暫停";
+		}
+      function gettime(){
+      	var currentTime = new Date();
+      	var show = currentTime.toLocaleTimeString();
+      	oDemo.innerHTML = show;
+      }
+      function clock(){
+        timer = setInterval(function(){gettime();},1000);
+
+      }
+      oBtn1.onclick = function(){clock();};
+      oBtn2.onclick = function(){stop();};
+//practice2
+      var oPic = document.getElementById('jpg');
+      var size = document.getElementsByTagName('p');
+      size[0].innerHTML += "圖片寬度:" + oPic.offsetWidth + "px<br>";
+      size[0].innerHTML += "圖片高度:" + oPic.offsetHeight + "px???<br>";
+      size[0].innerHTML += "左邊界距離:" + oPic.offsetLeft + "px<br>";
+      size[0].innerHTML += "上邊界距離:" + oPic.offsetTop + "px<br>";
+//practice3
+	function addNewNode(){
+		var newnode = document.createElement('li');
+		var nodetext = document.createTextNode('new node');
+		newnode.appendChild(nodetext);
+		var oUl = document.getElementById('myList');
+		oUl.appendChild(newnode);
+	}
+	function insertNode(){
+		var newnode = document.createElement('li');
+		var nodetext = document.createTextNode('new node');
+		newnode.appendChild(nodetext);
+		var oUl = document.getElementById('myList');
+		oUl.insertBefore(newnode,oUl.children[0]);
+	}
+	function removeNode(){
+		var oUl = document.getElementById('myList');
+		oUl.removeChild(oUl.children[0]);
+	}
+	function replaceNode(){
+		var newnode = document.createElement('li');
+		var nodetext = document.createTextNode('changed');
+		newnode.appendChild(nodetext);
+		var oUl = document.getElementById('myList');
+		oUl.replaceChild(newnode,oUl.children[0]);
+	}
+	</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+void combination(int A[],int n,int k,int pos);
+int output[100];
+
+int main(int argc,char* argv[])
+{
+  int i,A[100];
+  int n = atoi(argv[1]);
+  int k = atoi(argv[2]);
+  freopen("output","w",stdout);
+  printf("%d %d\n",n,k);
+  for(i=0;i<n;++i){
+	scanf("%d",&A[i]);
+	printf("%d ",A[i]);
+	}
+  printf("\n");
+  printf("\n");
+  combination(A,n,k,0);
+}
+
+void combination(int A[],int n,int k,int pos){
+    int i,j;
+    if(pos==k){
+        for(i=0;i<k;++i){
+            for(j=i+1;j<k;++j){
+                if(output[i] >= output[j]) return;
+            }
+        }
+        for(i=0;i<k;++i) printf("%d ",output[i]);
+        printf("\n");
+        return;
+    }
+    for(i=pos;i<n;++i){
+        output[pos] = A[i];
+        combination(A,n,k,pos+1);
+    }
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>canvas practice</title>
+</head>
+<body>
+<canvas id="myCanvas" width="1200px" height="800px" style="border:5px solid darkgreen;"></canvas>
+<script type="text/javascript">
+	var canvas = document.getElementById("myCanvas");
+	var ctx = canvas.getContext("2d");
+//空心方形
+	ctx.strokeRect(50,50,300,300);
+//線性變色
+	var grd = ctx.createLinearGradient(100,100,300,100)
+	grd.addColorStop(0,"darkgreen");
+	grd.addColorStop(0.8,"purple");
+	grd.addColorStop(1,"aqua");
+//實心方形
+	ctx.fillStyle = grd;
+	ctx.fillRect(100,100,300,300);
+//挖空方形
+	ctx.clearRect(150,150,100,100);
+//線條變色
+	var linegrd = ctx.createLinearGradient(0,0,1200,0);
+	linegrd.addColorStop(0,"darkred");
+	linegrd.addColorStop(0.2,"orange");
+	linegrd.addColorStop(0.5,"lightgreen");
+	linegrd.addColorStop(1,"blue");
+	ctx.strokeStyle = linegrd;
+//畫線條
+	ctx.beginPath();
+	ctx.lineWidth = 10;
+	ctx.lineJoin = "round";//頭尾圓
+	ctx.moveTo(180,180);
+	ctx.lineTo(360,360);
+	ctx.lineTo(400,160);
+	ctx.lineTo(600,450);
+	ctx.closePath();
+	ctx.fillStyle = "navy";
+	ctx.fill();//塗滿
+	ctx.stroke();
+//畫弧線
+	ctx.beginPath();
+	ctx.arc(250,500,150,0,1.2*Math.PI,true);//最後參數決定逆時針
+	ctx.stroke();
+//文字漸層
+	ctx.font = "100px italic bolder";
+	ctx.fillStyle = linegrd;
+	ctx.fillText("fill text",500,600);
+	ctx.strokeStyle = linegrd;
+	ctx.strokeText("stroke text",500,700);
+//實心圓
+	ctx.beginPath();
+	ctx.arc(350,650,100,0,2*Math.PI);
+	ctx.fillStyle = "tomato";
+	ctx.fill();
+	ctx.stroke();
+//弧線連接
+	ctx.beginPath();
+	ctx.lineCap = "round";
+	ctx.moveTo(550,150);
+	ctx.lineTo(750,150);
+	ctx.arcTo(1000,150,1000,450,200);
+	ctx.lineTo(1000,600);
+	ctx.stroke();
+//圖檔????
+	var img = new Image();
+	img.src = "photo.jpg";
+	ctx.drawImage(img,50,50,150,250);
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style> 
+            		.animation {
+                		position: relative;
+                		animation-name: hungry;
+                		animation-duration: 2s;
+				animation-delay: 0.5s;
+				animation-iteration-count: 100;
+            		}
+            		@keyframes hungry {
+                		0%   { left:0px; top:0px;}
+                		50%  { left:800px; top:0px;}
+                		100% { left:0px; top:0px;}
+            		}
+			.cat{color:blue;front-size:30;}
+			#dog{color:yellow;front-size:20;}
+			.kitty{float:right;overflow:auto;}
+        	</style>
+		
+	</head>
+	<body>
+		<div class="animation"><img src="../res/photo.jpg"width="200px" height="350px"></div>
+		<h1>welcome to my page!</h1>
+		<table border=2 width=100px height=100>
+			<caption>ABOUT ME</caption>
+			<tr>
+			<td>school</td>
+			<td>NCKU</td>
+			</tr>
+
+			<tr>
+			<td>interest sport</td>
+			<td>badminton</td>
+			</tr>
+
+			<tr>
+			<td colspan=2>I am from CSIE~!</td>
+			</tr>
+		</table>
+
+		<div class="cat" style="float:left">
+			<h2>more about me</h2>
+			<ol>
+				<li>click <a href="https://williamb44444.weebly.com/">here</a> to know me more</li>
+				<li>William Shen</li>
+				<li>Now in CSIE</li>
+				<li><A style="color:tomato;">I am gooooooooooood</A></li>
+			</ol>
+		</div>
+
+		<div>
+			<a id="dog" style="float: left">Let's watch some video for fun!</a>
+			<video width="300px" controls>
+				<source src="http://distribution.bbb3d.renderfarming.net/video/mp4/bbb_sunflower_1080p_30fps_normal.mp4" type="video/mp4">
+			</video>
+		</div>
+
+		<svg width="300px" height="300px" class="kitty">
+                <circle cx="50" cy="50" r="40" stroke="orange" stroke-width="4" fill="blue" />
+            	</svg>
+	</body>
+</html>
